@@ -1,0 +1,4 @@
+add_lunch_combo omni_X6885-eng
+add_lunch_combo omni_X6885-userdebug
+add_lunch_combo fox_X6885-eng
+add_lunch_combo fox_X6885-userdebug

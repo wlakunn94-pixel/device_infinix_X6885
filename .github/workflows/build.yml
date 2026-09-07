@@ -1,0 +1,57 @@
+name: Build OrangeFox Recovery (fox_14.1)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build OrangeFox by Vinylsmith
+    runs-on: ubuntu-22.04
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+    - name: Checkout Device Tree
+      uses: actions/checkout@v4
+      with:
+        path: device/infinix/X6885
+
+    - name: Free Disk Space
+      run: |
+        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php
+        sudo -E apt-get -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+        sudo -E apt-get update
+        sudo -E apt-get -y install git-core gnupg flex bison build-essential zip curl zlib1g-dev libc6-dev-i386 libncurses5 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig
+
+    - name: Install Repo Tool
+      run: |
+        mkdir -p ~/bin
+        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+        chmod a+x ~/bin/repo
+        sudo ln -sf ~/bin/repo /usr/bin/repo
+
+    - name: Sync OrangeFox Sync Repo
+      run: |
+        git clone https://gitlab.com/OrangeFox/sync.git ~/OrangeFox_sync
+        cd ~/OrangeFox_sync
+        ./orangefox_sync.sh --branch 14.1 --path ~/fox_14.1
+
+    - name: Move Device Tree to Build Tree
+      run: |
+        mkdir -p ~/fox_14.1/device/infinix/
+        cp -r device/infinix/X6885 ~/fox_14.1/device/infinix/
+
+    - name: Build OrangeFox
+      run: |
+        cd ~/fox_14.1
+        source build/envsetup.sh
+        lunch fox_X6885-eng || lunch omni_X6885-eng
+        mka vendorbootimage -j$(nproc --all)
+
+    - name: Upload Recovery Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: OrangeFox_A16_X6885_Recovery
+        path: |
+          ~/fox_14.1/out/target/product/X6885/vendor_boot.img
+          ~/fox_14.1/out/target/product/X6885/OrangeFox*.zip
