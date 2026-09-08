@@ -1,4 +1,2 @@
-add_lunch_combo omni_X6885-eng
-add_lunch_combo omni_X6885-userdebug
-add_lunch_combo fox_X6885-eng
-add_lunch_combo fox_X6885-userdebug
+# File ini sengaja dikosongkan.
+# Pilihan lunch sudah didefinisikan di AndroidProducts.mk melalui COMMON_LUNCH_CHOICES
