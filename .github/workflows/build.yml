@@ -45,7 +45,7 @@ jobs:
       run: |
         cd ~/fox_14.1
         source build/envsetup.sh
-        lunch fox_X6885-eng || lunch omni_X6885-eng
+        lunch fox_X6885-14.1-eng || lunch omni_X6885-14.1-eng
         mka vendorbootimage -j$(nproc --all)
 
     - name: Upload Recovery Artifact
