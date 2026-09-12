@@ -1,6 +1,9 @@
 # Inherit from omni
 $(call inherit-product, device/infinix/X6885/omni_X6885.mk)
 
+# Release Configuration
+TARGET_RELEASE := ap2a
+
 # OrangeFox Configuration
 FOX_VERSION := R12.1
 FOX_BUILD_TYPE := Unofficial
